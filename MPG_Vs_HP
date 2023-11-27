@@ -2,3 +2,36 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+
+fueleconomy_df = pd.read_csv('FuelEconomy.csv')
+fueleconomy_df.describe()
+
+sns.jointplot(x = 'Horse Power', y = 'Fuel Economy (MPG)', data = fueleconomy_df)
+sns.jointplot(x = 'Fuel Economy (MPG)', y = 'Horse Power', data = fueleconomy_df)
+
+sns.pairplot(fueleconomy_df)
+sns.lmplot(x = 'Horse Power', y =  'Fuel Economy (MPG)', data = fueleconomy_df)
+
+X = fueleconomy_df[['Horse Power']]
+y = fueleconomy_df['Fuel Economy (MPG)']
+
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3)
+
+from sklearn.linear_model import LinearRegression
+regressor = LinearRegression(fit_intercept = True)
+regressor.fit(X_train, y_train)
+
+print('Linear Model Coeff (m):', regressor.coef_)
+print('Linear Model Coeff (b):', regressor.intercept_)
+
+y_predict = regressor.predict(X_test)
+plt.scatter(X_train, y_train, color = 'gray')
+plt.plot(X_train, regressor.predict(X_train), color = 'blue')
+plt.xlabel('Horse Power (HP)')
+plt.ylabel('MPG')
+plt.title('HP vs. MPG (Training Set)')
+
+HP = 500
+MPG = regressor.predict(HP)
+MPG
